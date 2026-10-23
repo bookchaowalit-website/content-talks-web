@@ -1,51 +1,39 @@
-# bookchaowalit-talks-frontend — Product brief
+# Talks — Product truth
 
-**Slug:** `bookchaowalit-website/bookchaowalit-talks-frontend`  
-**Generated:** 2026-08-11 (bulk Book Dev closeout)  
-**Status:** starter / portfolio boundary
+> Inferred from the code and copy (no user interview). Checked against the portfolio card claims review
+> (`portfolio-site-web/docs/audits/CARD-CLAIMS-REVIEW-2026-10.md`, row `talks`, evidence Live→Prototype) on 2026-10-23.
 
-## Current product truth
+## What it is
 
-- This is a static speaking-engagement index with two demo records, search, and Upcoming/Past filtering.
-- There is no audio player, event booking, remote data source, or content management backend.
+A client-only demo of a speaking-engagement index over two hard-coded talks.
 
-## Purpose
+## Who it is for
 
-Portfolio repository under Book Dev. This brief records ownership and the
-current honest status so the nested tree is not an empty shell in the task
-system.
+A portfolio visitor who wants to see a small archive UI: search, a status filter and a styled programme list.
 
-## Runnable path
+## What works today
 
-See `README.md` for install and run instructions when present.
+1. Search title, event or date and filter by All, Upcoming or Past. The status is derived from the talk date and
+   the visitor's date, so a talk never stays "upcoming" after its day. Both records (2025-03-15, 2024-11-20) are past.
+2. `/api/mcp` answers JSON-RPC with `get_all`, `get_by_id` and `search` over the same list, echoing the request id.
+3. Front-end and server errors go to Sentry (errors only, personal data stripped) when `NEXT_PUBLIC_SENTRY_DSN` is set.
 
-## Limits
+## What does not work (and must not be claimed)
 
-- Not claimed as production-ready unless README and tests prove it.
-- Mobile smoke / emulator acceptance is separate and toolchain-dependent.
+- No embedded slide decks, video recordings, related posts, reach numbers or speaking-invite impact (claims in the
+  portfolio card, flagged in the 2026-10 review).
+- No booking, account, storage or CMS; the two records are sample content in `lib/talks.ts`.
 
-## Source README excerpt
+## Live URL and deploy state
 
-```
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+- Live: https://talks.bookchaowalit.com (HTTP 200 on 2026-10-23).
+- Last production deploy: 2026-10-23 12:19 (+07), Vercel CLI, commit d76fb71 (the CVE patch). The Vercel project
+  `bookchaowalit-talks-frontend` has a Git link naming the old repository (`bookchaowalit/bookchaowalit-talks-frontend`),
+  so a push to `main` does not deploy. The L2 commits (status fix, truthful MCP route, tests, Sentry) stay undeployed
+  until the owner reconnects Vercel Git to `bookchaowalit-website/content-talks-web` (owner action D9). Until then the
+  live site still labels the 2025 talk "UPCOMING".
+- `NEXT_PUBLIC_SENTRY_DSN` is set on the Vercel project (Sentry project `content-talks-web`, org `personal-yu0`).
 
-## Getting Started
+## Boundaries
 
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize an
-```
+- Browser-only apart from the stateless `/api/mcp` route. No personal data is collected.
