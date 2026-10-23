@@ -1,25 +1,19 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useSyncExternalStore } from "react";
+import { FILTERS, TALKS, filterTalks, formatDate, isoDay, talkStatus, type TalkFilter } from "@/lib/talks";
 
-type Talk = { id: string; title: string; date: string; event: string; upcoming: boolean };
-
-const TALKS: Talk[] = [
-  { id: "1", title: "Web Development Trends", date: "2025-03-15", event: "TechConf", upcoming: true },
-  { id: "2", title: "React Patterns", date: "2024-11-20", event: "Meetup", upcoming: false },
-];
-
-function formatDate(value: string) {
-  return new Intl.DateTimeFormat("en", { month: "short", day: "2-digit", year: "numeric" }).format(new Date(`${value}T12:00:00`));
-}
+// Today's date is only known in the browser. The server snapshot is null, so the static HTML never
+// carries a build-time "upcoming" label, and hydration matches before the client fills it in.
+const noSubscription = () => () => {};
+const clientToday = () => isoDay(new Date());
+const serverToday = () => null;
 
 export default function Home() {
   const [query, setQuery] = useState("");
-  const [filter, setFilter] = useState<"All" | "Upcoming" | "Past">("All");
-  const visibleTalks = useMemo(() => TALKS.filter((talk) => {
-    const matchesFilter = filter === "All" || (filter === "Upcoming" ? talk.upcoming : !talk.upcoming);
-    return matchesFilter && `${talk.title} ${talk.event} ${talk.date}`.toLowerCase().includes(query.toLowerCase());
-  }), [filter, query]);
+  const [filter, setFilter] = useState<TalkFilter>("All");
+  const today = useSyncExternalStore(noSubscription, clientToday, serverToday);
+  const visibleTalks = useMemo(() => filterTalks(TALKS, filter, query, today), [filter, query, today]);
 
   return (
     <main className="broadcast-shell">
@@ -48,14 +42,14 @@ export default function Home() {
           <label className="search-console"><span>Find in archive</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search title or event" /></label>
         </div>
         <div className="filter-strip" role="group" aria-label="Talk status">
-          {(["All", "Upcoming", "Past"] as const).map((option) => <button key={option} className={filter === option ? "filter-button active" : "filter-button"} onClick={() => setFilter(option)}>{option}</button>)}
+          {FILTERS.map((option) => <button key={option} className={filter === option ? "filter-button active" : "filter-button"} onClick={() => setFilter(option)}>{option}</button>)}
           <span className="result-count">{visibleTalks.length} of {TALKS.length} transmissions</span>
         </div>
         <div className="programme-list">
           {visibleTalks.length === 0 ? <div className="empty-frequency">No transmission matches that search. Try a different frequency.</div> : visibleTalks.map((talk, index) => (
             <article className="programme-row" key={talk.id}>
               <div className="programme-number">{String(index + 1).padStart(2, "0")}</div>
-              <div className="programme-date"><span>{formatDate(talk.date)}</span><small>{talk.upcoming ? "UPCOMING" : "PAST"}</small></div>
+              <div className="programme-date"><span>{formatDate(talk.date)}</span><small>{today ? talkStatus(talk, today).toUpperCase() : "DATED"}</small></div>
               <div className="programme-title"><h3>{talk.title}</h3><p>{talk.event}</p></div>
               <div className="programme-signal" aria-hidden="true"><span /><span /><span /><span /><span /></div>
             </article>
