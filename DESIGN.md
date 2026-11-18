@@ -1,44 +1,13 @@
-# Design system — Talks
+# Design
 
-## Overview
+Since 2026-11-19 Talks uses the shared Reader shell (see `READER.md`): Geist via `next/font`, the
+`--rs-*` tokens in `app/reader-shell.css` (light and dark, WCAG 2.2 AA), one h1, 44px targets and a
+forced-colors fallback. The broadcast-console look (Trebuchet/Georgia system fonts, 9–11px labels,
+34px filter buttons, the tuning panel whose label overlapped its bars on phones) is retired.
 
-The talks archive is a late-night broadcast console: a quiet station header, a large editorial title, and a paper-bright programme selector. It makes the existing static search/filter demo feel like a deliberate speaking archive without implying live streaming or booking.
-
-## Colors
-
-- #101719 — broadcast room ground and primary ink.
-- #E9F1EA — programme paper and high-contrast type.
-- #9CE7D0 — signal green for active controls and station marks.
-- #F2A56F — warm transmission accent for dates and signal bars.
-- #54766D — secondary ink on the light console.
-
-## Typography
-
-Trebuchet MS carries the compact station labels and controls. Georgia italic is reserved for the expressive word in the main title and the editorial programme names.
-
-## Layout
-
-The dark hero is an asymmetric broadcast field. The light archive console creates a hard change of medium, then rows the talks into a readable date/title/event sequence. On mobile the control panel stacks and each programme becomes a three-column signal strip.
-
-## Elevation & Depth
-
-Depth comes from the light console inserted into the dark room, 1px rules, and the inset tuning-panel frame. There are no floating cards or fake live metrics.
-
-## Shapes
-
-Corners are square or minimally softened. Lines are thin, functional, and used like equipment markings; signal blocks are rectangular.
-
-## Components
-
-- Station mark and transmission status
-- Tuning panel with programme count and waveform
-- Search console and status filters
-- Programme rows with date, event, and signal bars
-- Honest static-demo footer
-
-## Do's and Don'ts
-
-- Do keep dates, event names, and archive states prominent.
-- Do let the warm accent mark status, not decoration everywhere.
-- Don't suggest audio playback, ticketing, or a live feed.
-- Don't convert the archive into generic equal cards or add fake engagement metrics.
+- One page: an Upcoming section (an empty state with a way to ask about a talk when nothing is booked)
+  and Past talks, newest first, each with its date and event. Talks have no pages, recordings or
+  slides, so the entries are plain text, not links.
+- Upcoming/past is worked out from the date at render time; the page revalidates daily
+  (`revalidate = 86400`). The search and All/Upcoming/Past filters were removed: with two talks they
+  mostly produced empty states.
