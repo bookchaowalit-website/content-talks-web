@@ -10,7 +10,7 @@ const SOURCE = "https://github.com/bookchaowalit-website/content-talks-web";
 
 function TalkList({ talks, id }: { talks: Talk[]; id: string }) {
   return (
-    <ul className="rs-list" aria-labelledby={id}>
+    <ul className="rs-list" role="list" aria-labelledby={id}>
       {talks.map((talk) => (
         <li key={talk.id}>
           <article className="rs-entry">
