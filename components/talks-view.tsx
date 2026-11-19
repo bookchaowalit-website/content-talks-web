@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { EmptyState, Reader, ReaderFoot, ReaderHead, ReaderTop, formatDate, plural } from "@/components/reader-shell";
 import { talkStatus, type Talk } from "@/lib/talks";
 
@@ -27,9 +28,7 @@ export function TalksView({ talks, today }: { talks: Talk[]; today: string }) {
   const upcoming = talks.filter((talk) => talkStatus(talk, today) === "Upcoming").sort((a, b) => a.date.localeCompare(b.date));
   const past = talks.filter((talk) => talkStatus(talk, today) === "Past").sort((a, b) => b.date.localeCompare(a.date));
   return (
-    <Reader>
-      <ReaderTop name="Talks" tagline="Chaowalit Greepoke" links={[]} />
-      <main id="main" className="rs-main">
+    <TalksFrame>
         <ReaderHead
           title="Talks at conferences and meetups."
           lede="Each talk with its date and event. There are no recordings or slides online yet."
@@ -57,8 +56,16 @@ export function TalksView({ talks, today }: { talks: Talk[]; today: string }) {
             <EmptyState headingLevel={3} title="No past talks yet" />
           )}
         </section>
-      </main>
-      <ReaderFoot source={SOURCE} links={[{ href: "/api/mcp", label: "MCP API" }]} note="A short hand-written list kept in the repository: no recordings, booking or backend." />
+    </TalksFrame>
+  );
+}
+
+export function TalksFrame({ children }: { children: ReactNode }) {
+  return (
+    <Reader>
+      <ReaderTop name="Talks" tagline="Chaowalit Greepoke" links={[]} />
+      <main id="main" className="rs-main">{children}</main>
+      <ReaderFoot source={SOURCE} links={[{ href: "/mcp", label: "MCP API" }]} note="A short hand-written list kept in the repository: no recordings, booking or backend." />
     </Reader>
   );
 }

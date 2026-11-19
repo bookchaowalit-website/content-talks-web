@@ -1,5 +1,6 @@
 // @vitest-environment happy-dom
 import { renderToStaticMarkup } from "react-dom/server";
+import McpPage from "@/app/mcp/page";
 import { describe, expect, it } from "vitest";
 import { TalksView } from "@/components/talks-view";
 import { TALKS } from "@/lib/talks";
@@ -32,6 +33,13 @@ describe("talks page", () => {
     const host = page(<TalksView talks={TALKS} today="2024-11-20" />);
     expect(texts(host, 'ul[aria-labelledby="upcoming"] h3')).toEqual(["React Patterns", "Web Development Trends"]);
     expect(host.querySelector(".rs-empty h3")?.textContent).toBe("No past talks yet");
+  });
+
+  it("links the footer to an MCP how-to page with the real tools", () => {
+    expect(page(<Home />).querySelector('.rs-foot a[href="/mcp"]')?.textContent).toBe("MCP API");
+    const host = page(<McpPage />);
+    expect(host.querySelectorAll("h1").length).toBe(1);
+    expect([...host.querySelectorAll("tbody code")].map((c) => c.textContent)).toEqual(["get_all", "get_by_id", "search"]);
   });
 
   it("uses the site's own domain and sends /more-projects to the main site", async () => {
