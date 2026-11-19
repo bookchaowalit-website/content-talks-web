@@ -42,6 +42,14 @@ describe("talks page", () => {
     expect([...host.querySelectorAll("tbody code")].map((c) => c.textContent)).toEqual(["get_all", "get_by_id", "search"]);
   });
 
+  it("says /api/mcp is a custom JSON-RPC subset, not a full MCP server", () => {
+    const text = page(<McpPage />).textContent ?? "";
+    expect(text).not.toMatch(/answers Model Context Protocol/);
+    expect(text).toContain("Not a full MCP server");
+    expect(text).toContain("result.talks");
+    expect(text).toMatch(/standard MCP\s+clients expect/);
+  });
+
   it("uses the site's own domain and sends /more-projects to the main site", async () => {
     expect(sitemap()[0].url).toBe("https://talks.bookchaowalit.com/");
     expect(robots().sitemap).toBe("https://talks.bookchaowalit.com/sitemap.xml");
