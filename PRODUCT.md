@@ -37,3 +37,10 @@ A portfolio visitor who wants to see a small archive UI: search, a status filter
 ## Boundaries
 
 - Browser-only apart from the stateless `/api/mcp` route. No personal data is collected.
+
+## Known limits
+
+- Upcoming/Past in the cached HTML uses the day the page was built (ISR, at most 1 day old); the browser regroups with
+  the visitor's day after hydration (`components/talks-today.tsx`). Before JavaScript runs, or with JavaScript off, a
+  talk can show under Upcoming for up to a day after it. Full fix: render a status-neutral list in the HTML and group
+  only once the visitor's date is known (Codex 2026-11-20, review of 46fe39b).
